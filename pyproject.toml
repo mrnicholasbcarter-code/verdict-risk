@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "trade-risk-engine"
+version = "0.2.0"
+description = "HFT-grade pure-functional risk management authority. Zero garbage-collection allocation."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+
+dependencies = [
+    "msgspec>=0.18.0",
+    "numpy>=1.26.0"
+]
+
+[project.optional-dependencies]
+dev = ["hypothesis>=6.90.0", "pytest>=8.0.0"]
