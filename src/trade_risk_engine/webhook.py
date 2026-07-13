@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 import httpx
 from opentelemetry import trace
@@ -9,6 +9,11 @@ logger = logging.getLogger("trade_risk_engine.webhook")
 tracer = trace.get_tracer("trade-risk-engine")
 
 
+def _utc_now() -> datetime:
+    """Return an aware UTC timestamp for serialized risk events."""
+    return datetime.now(timezone.utc)
+
+
 class ProposedTradeInfo(BaseModel):
     target_family: str
     proposed_cost: float
@@ -16,7 +21,7 @@ class ProposedTradeInfo(BaseModel):
 
 
 class RiskEvent(BaseModel):
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=_utc_now)
     decision_approved: bool
     reason_code: str
     suggested_size: float
