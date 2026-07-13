@@ -274,11 +274,11 @@ class TestWebhookEmitterIntegration:
 
     @pytest.mark.anyio
     async def test_webhook_emit_no_client_default(self):
-        from unittest.mock import AsyncMock, patch
+        from unittest.mock import Mock, patch
 
-        mock_response = AsyncMock()
+        mock_response = Mock()
         mock_response.status_code = 200
-        mock_response.raise_for_status = AsyncMock()
+        mock_response.raise_for_status = Mock()
 
         with patch("httpx.AsyncClient.post", return_value=mock_response) as mock_post:
             emitter = WebhookEmitter("http://testserver/webhook")
