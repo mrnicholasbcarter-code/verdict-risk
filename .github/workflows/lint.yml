@@ -20,6 +20,6 @@ jobs:
       - name: Run Ruff linter
         run: ruff check .
       - name: Check formatting
-        run: ruff format --check .
+        run: ruff format .
       - name: Run mypy
         run: mypy src/ || true

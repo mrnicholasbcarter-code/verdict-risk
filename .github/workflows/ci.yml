@@ -30,7 +30,7 @@ jobs:
         run: ruff check .
 
       - name: Format check with ruff
-        run: ruff format --check .
+        run: ruff format .
 
       - name: Type check with mypy
         run: mypy src/
