@@ -12,6 +12,7 @@ from .state import (
     TradeOutcome,
 )
 from .webhook import ProposedTradeInfo, RiskEvent, WebhookEmitter
+from .provider_receipts import build_risk_receipt
 
 __all__ = [
     "ConsecutiveLossGate",
