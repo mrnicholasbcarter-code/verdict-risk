@@ -27,10 +27,8 @@ jobs:
           pip install -e ".[dev]"
 
       - name: Verdict compat gate (CON-001)
-        # TEMPORARY pin: points at unmerged verdict-core PR #290 (commit 7291941).
-        # Move to @main/release once that PR merges.
         run: |
-          pip install "git+https://github.com/mrnicholasbcarter-code/verdict-core.git@7291941"
+          pip install "git+https://github.com/mrnicholasbcarter-code/verdict-core.git@main"
           verdict compat check --declared .verdict/compat-manifest.json --json
 
       - name: Lint with ruff
