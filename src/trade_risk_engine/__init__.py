@@ -1,6 +1,7 @@
 from .engine import RiskAuthority
 from .execution import PaperExecutionAdapter
 from .gates import ConsecutiveLossGate, KillSwitch, TimedCircuitBreaker
+from .provider_receipts import build_risk_receipt
 from .state import (
     ConsecutiveLossGateState,
     KillSwitchState,
@@ -12,7 +13,6 @@ from .state import (
     TradeOutcome,
 )
 from .webhook import ProposedTradeInfo, RiskEvent, WebhookEmitter
-from .provider_receipts import build_risk_receipt
 
 __all__ = [
     "ConsecutiveLossGate",
@@ -31,4 +31,5 @@ __all__ = [
     "TimedCircuitBreakerState",
     "TradeOutcome",
     "WebhookEmitter",
+    "build_risk_receipt",
 ]
