@@ -81,10 +81,10 @@ def _require_finite(name: str, value: Any) -> float:
     # error, not a coercible value.
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise RiskProviderError(name, f"expected a real number, got {type(value).__name__}")
-    value = float(value)
-    if not math.isfinite(value):
-        raise RiskProviderError(name, f"must be finite, got {value!r}")
-    return value
+    number = float(value)
+    if not math.isfinite(number):
+        raise RiskProviderError(name, f"must be finite, got {number!r}")
+    return number
 
 
 def _require_identifier(name: str, value: Any) -> str:
