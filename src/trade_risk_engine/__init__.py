@@ -1,6 +1,14 @@
+from .config import load_risk_config
 from .engine import RiskAuthority
 from .execution import PaperExecutionAdapter
-from .gates import ConsecutiveLossGate, KillSwitch, TimedCircuitBreaker
+from .gates import (
+    ClusterCapContext,
+    ConsecutiveLossGate,
+    KillSwitch,
+    TimedCircuitBreaker,
+    evaluate_cluster_cap,
+)
+from .kelly import kelly_fraction
 from .provider_receipts import build_risk_receipt
 from .state import (
     ConsecutiveLossGateState,
@@ -15,6 +23,7 @@ from .state import (
 from .webhook import ProposedTradeInfo, RiskEvent, WebhookEmitter
 
 __all__ = [
+    "ClusterCapContext",
     "ConsecutiveLossGate",
     "ConsecutiveLossGateState",
     "KillSwitch",
@@ -32,4 +41,7 @@ __all__ = [
     "TradeOutcome",
     "WebhookEmitter",
     "build_risk_receipt",
+    "evaluate_cluster_cap",
+    "kelly_fraction",
+    "load_risk_config",
 ]
