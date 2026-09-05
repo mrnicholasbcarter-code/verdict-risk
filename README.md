@@ -10,7 +10,7 @@ Traditional trade risk systems suffer execution drift, concurrency race conditio
 
 | Layer | Responsibility | Latency Budget |
 |-------|----------------|----------------|
-| **Pure Math** (this crate) | Drawdown gates, position limits, correlation bounds, Kelly sizing | **< 50 µs** |
+| **Pure Math** (this crate) | Drawdown gates, position limits, cluster exposure cap, Kelly sizing | **< 50 µs** |
 | **State Management** | Redis/Postgres persistence, audit logging | < 1 ms |
 | **Network I/O** | Broker APIs, market data feeds | Variable |
 
@@ -23,7 +23,7 @@ Traditional trade risk systems suffer execution drift, concurrency race conditio
 | **Zero-allocation hot path** | `msgspec`-encoded structs, no GC pressure on evaluation |
 | **Deterministic gates** | Same inputs → same outputs, always |
 | **Sub-millisecond latency** | Pure Python hot path, no locks or I/O |
-| **Stateless gates** | Drawdown, position, correlation, Kelly — no external deps |
+| **Stateless gates** | Drawdown, position, cluster cap, Kelly — no external deps |
 | **Stateful desk controls** | Daily loss limits, sector exposure, factor models (optional Redis) |
 | **OpenTelemetry native** | Spans, metrics, logs for every evaluation |
 | **Property-based testing** | Hypothesis fuzzing + formal verification of mathematical properties |
@@ -39,8 +39,8 @@ Traditional trade risk systems suffer execution drift, concurrency race conditio
 │  ┌────────────────────────────────────────────────────────────────────────┐  │
 │  │                    STATELESS RISK GATES (Pure Math)                    │  │
 │  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │  │
-│  │  │  Drawdown    │ │  Position    │ │  Correlation │ │  Kelly       │  │  │
-│  │  │  Gate        │ │  Limit Gate  │ │  Gate        │ │  Sizing      │  │  │
+│  │  │  Drawdown    │ │  Position    │ │  Cluster     │ │  Kelly       │  │  │
+│  │  │  Gate        │ │  Limit Gate  │ │  Cap Gate    │ │  Sizing      │  │  │
 │  │  └──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘  │  │
 │  └────────────────────────────────────────────────────────────────────────┘  │
 │  ┌────────────────────────────────────────────────────────────────────────┐  │
@@ -108,32 +108,38 @@ authority = RiskAuthority(kill_switch=KillSwitch())
 
 ## Configuration
 
+`trade_risk_engine.load_risk_config()` loads and validates an operational
+desk-controls file, defaulting to `~/.verdict/risk_config.yaml`:
+
 ```yaml
 # ~/.verdict/risk_config.yaml
-drawdown_gate:
-  max_drawdown_pct: 0.10
-  lookback_days: 30
+drawdown:
+  max_daily_drawdown_pct: 0.05
 
-position_limits:
-  default_max_usd: 50000
-  per_symbol:
-    "BTC-USD": 100000
-    "ETH-USD": 50000
+concentration:
+  max_correlated_exposure: 200.0
+  max_cluster_usd: 20.0
 
-correlation:
-  max_correlation: 0.7
-  lookback_window: 100
+expected_value:
+  min_expected_value: 0.01
+
+consecutive_losses:
+  max_consecutive_losses: 5
+  time_window_seconds: 3600.0
 
 kelly:
-  enabled: true
-  conservative_fraction: 0.5  # Half-Kelly
-
-desk_controls:
-  daily_loss_limit_usd: 5000
-  sector_exposure_pct: 0.30
-  paper_slippage_bps: 5
-  paper_latency_ms: 100
+  conservative_fraction: 0.25
 ```
+
+`load_risk_config()` returns a flat dict. The keys
+`max_daily_drawdown_pct`, `max_correlated_exposure`, `min_expected_value`,
+`consecutive_loss_limit`, and `consecutive_loss_window_minutes` are
+`RiskContext`-compatible (`consecutive_loss_window_minutes` is derived from
+`time_window_seconds / 60`). `max_cluster_usd` and `kelly_conservative_fraction`
+are not `RiskContext` fields — they feed `ClusterCapContext` and
+`kelly_fraction()` respectively. Missing files, invalid YAML, wrong-typed
+fields, and out-of-range values each raise (`FileNotFoundError`,
+`yaml.YAMLError`, `TypeError`, `ValueError`); unknown top-level keys only warn.
 
 ---
 
@@ -176,8 +182,8 @@ python -m trade_risk_engine.benchmark --iterations 1000 --warmup-iterations 100
 | Property | Test |
 |----------|------|
 | Drawdown gate monotonicity | `drawdown(a) >= drawdown(b) if a <= a)` |
-| Kelly optimality | `f* = (bp - q)/b` matches analytic solution |
-| Correlation gate symmetry | `corr(A,B) == corr(B,A)` |
+| Kelly optimality | `f* = (bp - q)/b` matches analytic solution (`tests/test_kelly.py`) |
+| Cluster cap threshold correctness | approve at/under cap, reject over cap (`tests/test_cluster_cap.py`) |
 | Position limit idempotence | `gate(x); gate(x) == gate(x)` |
 
 ---
@@ -188,23 +194,47 @@ python -m trade_risk_engine.benchmark --iterations 1000 --warmup-iterations 100
 |-----------|---------------|---------------|------------|
 | Drawdown gate | 12 µs | 35 µs | 80,000 ops/s |
 | Position limit | 8 µs | 22 µs | 120,000 ops/s |
-| Correlation gate | 45 µs | 120 µs | 22,000 ops/s |
-| Kelly sizing | 15 µs | 40 µs | 65,000 ops/s |
 
 *Historical benchmark snapshot; rerun the benchmark on your hardware before
-using these figures as an operational bound.*
+using these figures as an operational bound. The cluster cap gate and Kelly
+sizing function are not yet covered by `trade_risk_engine.benchmark` — no
+throughput/latency numbers are published for them here until a real benchmark
+is written.*
 
 ---
 
 ## Links
 
-- **Verdict Core**: https://github.com/verdict/verdict-core
-- **Verdict Edge**: https://github.com/verdict/verdict-edge
-- **Verdict Backtest**: https://github.com/verdict/verdict-backtest
+- **Verdict Core**: https://github.com/mrnicholasbcarter-code/verdict-core
+- **Verdict Backtest**: https://github.com/mrnicholasbcarter-code/verdict-backtest
 - **RuVector**: https://github.com/ruvnet/ruvector
 - **Ruflo**: https://github.com/ruvnet/claude-flow
 
+*Verdict Edge is on the roadmap; no such repository exists yet, so the prior
+link (404) has been removed rather than fixed.*
+
 ---
+
+## Changelog
+
+- Ported the coin-cluster exposure cap from `kalshi-trader/v40/risk.py` as a
+  stateless `ClusterCapContext` / `evaluate_cluster_cap()` gate, wired into
+  `RiskAuthority.evaluate_trade` / `evaluate_with_state` as an optional kwarg.
+- Ported Kelly-criterion sizing from `kalshi-trader/v40/portfolio/kelly.py`
+  as `trade_risk_engine.kelly_fraction()`, generalized with a
+  `conservative_fraction` parameter (default `0.25`).
+- Added `trade_risk_engine.load_risk_config()`, a validated YAML loader for
+  `~/.verdict/risk_config.yaml` desk controls.
+- Corrected the GitHub org on the Verdict Core / Verdict Backtest links
+  (previously pointed at a non-existent `verdict/` org) and removed the dead
+  Verdict Edge link.
+- Removed the "Correlation gate" / "Kelly sizing" rows from the performance
+  benchmark table — no real benchmark had been run for either, and the
+  numbers were fabricated. They will be re-added once `trade_risk_engine.benchmark`
+  actually measures them.
+- Replaced the "Correlation gate symmetry" math-property claim (which never
+  applied to a cluster cap) with a cluster-cap threshold-correctness property,
+  and confirmed the Kelly-optimality property against the ported formula.
 
 ## License
 
