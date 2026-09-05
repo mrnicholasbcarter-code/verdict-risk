@@ -36,9 +36,7 @@ _FieldSpec = tuple[str, str, str, type, "Any"]
 
 def _require_number(name: str, value: Any, path: Path, yaml_key: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
-        raise TypeError(
-            f"{yaml_key} must be a number, got {type(value).__name__} (config: {path})"
-        )
+        raise TypeError(f"{yaml_key} must be a number, got {type(value).__name__} (config: {path})")
     return float(value)
 
 
@@ -135,8 +133,9 @@ def load_risk_config(path: Path | None = None) -> dict[str, float | int]:
         yaml_key = "consecutive_losses.max_consecutive_losses"
         raw = consecutive_losses["max_consecutive_losses"]
         if isinstance(raw, bool) or not isinstance(raw, int):
-            raise TypeError(f"{yaml_key} must be an int, got {type(raw).__name__} "
-                             f"(config: {resolved})")
+            raise TypeError(
+                f"{yaml_key} must be an int, got {type(raw).__name__} (config: {resolved})"
+            )
         if raw < 0:
             raise ValueError(f"{yaml_key} must be >= 0, got {raw} (config: {resolved})")
         result["consecutive_loss_limit"] = raw

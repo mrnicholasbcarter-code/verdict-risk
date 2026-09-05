@@ -63,7 +63,7 @@ def test_invalid_yaml_syntax_raises_yaml_error(tmp_path: Path) -> None:
 
 
 def test_wrong_type_raises_type_error(tmp_path: Path) -> None:
-    path = _write(tmp_path, "drawdown:\n  max_daily_drawdown_pct: \"high\"\n")
+    path = _write(tmp_path, 'drawdown:\n  max_daily_drawdown_pct: "high"\n')
     with pytest.raises(TypeError):
         load_risk_config(path=path)
 

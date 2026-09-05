@@ -101,4 +101,3 @@ def test_wired_into_risk_authority_approves_when_no_cluster_ctx() -> None:
         current_time=datetime.now(tz=timezone.utc),
     )
     assert decision.approved
-
