@@ -65,6 +65,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
           pip install bandit safety
+          pip install "setuptools>=83"
 
       - name: Run bandit security linting
         run: bandit -r src/

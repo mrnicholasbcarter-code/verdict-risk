@@ -28,3 +28,7 @@ package-lock.json
 
 # code-review-graph
 .code-review-graph/
+
+# spec-kit local tooling/cache (only specs/<NNN-kebab>/ is committed record)
+.specify/
+.worktrees/
