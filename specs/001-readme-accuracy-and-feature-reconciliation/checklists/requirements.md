@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain — **3 open owner decisions required (Q1/Q2/Q3)**
+- [x] No [NEEDS CLARIFICATION] markers remain — Q1/Q2/Q3 resolved 2026-09-05 as option A (port); see spec Notes
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic
