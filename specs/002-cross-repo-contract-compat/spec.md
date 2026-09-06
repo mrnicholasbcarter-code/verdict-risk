@@ -14,6 +14,7 @@
 
 - Q: How should the routing-decision contract mismatch be repaired? → A: Regenerate the consumer declaration from verified current producer contracts.
 - Q: Where should the compatibility repair ship? → A: New standalone change; leave the open README-accuracy change untouched until this lane is green.
+- Q: Are there remaining critical ambiguities after the recorded Q1/Q2 answers? → A: None; proceed to plan. Exact named producer revision at implement time and regeneration mechanics are deferred to planning.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -116,4 +117,4 @@ A reviewer looking at this compatibility repair must be able to tell it apart fr
 - This feature owns compatibility repair only. The security-tooling / setuptools failure is a later, separate Spec Kit lane.
 - Isolated worktrees and one writer per worktree remain mandatory. The dirty verdict-risk and verdict-node main checkouts, and the existing README-accuracy worktree, are not writers for this feature.
 - GitHub issues, task checkboxes, and handoff files are leads. Live repository source, GitHub, and check runs are authoritative.
-- Recorded answers on 2026-09-06: Q1 = regenerate the consumer declaration from verified producer evidence; Q2 = new standalone change, do not edit the open README-accuracy change. A `/speckit-clarify` pass must still run before planning.
+- Recorded answers on 2026-09-06: Q1 = regenerate the consumer declaration from verified producer evidence; Q2 = new standalone change, do not edit the open README-accuracy change. Clarify completed the same day with no remaining critical ambiguities; next command is `/speckit-plan`.
