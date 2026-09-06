@@ -26,7 +26,7 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 **Purpose**: Confirm isolation and name the producer revision before any declaration rewrite
 
-- [ ] T001 Re-read live `origin/main` SHA for `mrnicholasbcarter-code/verdict-core` and write it to `specs/002-cross-repo-contract-compat/producer-revision.txt` (plan-time lead was `536c79e26e17ab3cf39e78f1844100ca9c27998e`; replace if `origin/main` moved)
+- [X] T001 Re-read live `origin/main` SHA for `mrnicholasbcarter-code/verdict-core` and write it to `specs/002-cross-repo-contract-compat/producer-revision.txt` (plan-time lead was `536c79e26e17ab3cf39e78f1844100ca9c27998e`; replace if `origin/main` moved)
 
 ---
 
@@ -36,8 +36,8 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Create gitignored `.venv` in this worktree and install verdict-core at the SHA in `specs/002-cross-repo-contract-compat/producer-revision.txt` (do not commit `.venv`)
-- [ ] T003 Run `verdict compat manifest --json` from that install and save stdout to `specs/002-cross-repo-contract-compat/producer-manifest.json` without editing hashes by hand
+- [X] T002 Create gitignored `.venv` in this worktree and install verdict-core at the SHA in `specs/002-cross-repo-contract-compat/producer-revision.txt` (do not commit `.venv`)
+- [X] T003 Run `verdict compat manifest --json` from that install and save stdout to `specs/002-cross-repo-contract-compat/producer-manifest.json` without editing hashes by hand
 
 **Checkpoint**: Named producer SHA and producer-emitted manifest exist. User stories can start.
 
@@ -53,13 +53,13 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T004 [US1] Add failing tests in `tests/test_compat_manifest.py` that `.verdict/compat-manifest.json` has `schema_version` `1`, includes every key from `specs/002-cross-repo-contract-compat/producer-manifest.json`, and does not keep RoutingDecisionContract `sha256:d893d5c55f520733bc6b117efa050a188f7450fb045aa386370687c429d8edfc`; also copy the current stale file to `tests/fixtures/stale-compat-manifest.json` and assert `verdict compat check --declared tests/fixtures/stale-compat-manifest.json --json` is not allowed and names `RoutingDecisionContract`
+- [X] T004 [US1] Add failing tests in `tests/test_compat_manifest.py` that `.verdict/compat-manifest.json` has `schema_version` `1`, includes every key from `specs/002-cross-repo-contract-compat/producer-manifest.json`, and does not keep RoutingDecisionContract `sha256:d893d5c55f520733bc6b117efa050a188f7450fb045aa386370687c429d8edfc`; also copy the current stale file to `tests/fixtures/stale-compat-manifest.json` and assert `verdict compat check --declared tests/fixtures/stale-compat-manifest.json --json` is not allowed and names `RoutingDecisionContract`
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] Replace `.verdict/compat-manifest.json` with the exact contents of `specs/002-cross-repo-contract-compat/producer-manifest.json` (copy, do not retype hashes)
-- [ ] T006 [US1] Run `verdict compat check --declared .verdict/compat-manifest.json --json` against the named producer and write `specs/002-cross-repo-contract-compat/compat-check-receipt.json` containing at least `allowed` (must be true), `producer_revision` from `producer-revision.txt`, and `consumer_head` from `git rev-parse HEAD`; do not skip or waive. If `producer-revision.txt` is not the live producer `origin/main` SHA, re-run T001–T005 against that live SHA before recording the receipt.
-- [ ] T007 [US1] Re-run `pytest tests/test_compat_manifest.py` and confirm T004 now passes on `.verdict/compat-manifest.json` while `tests/fixtures/stale-compat-manifest.json` still fails closed with `RoutingDecisionContract` named
+- [X] T005 [US1] Replace `.verdict/compat-manifest.json` with the exact contents of `specs/002-cross-repo-contract-compat/producer-manifest.json` (copy, do not retype hashes)
+- [X] T006 [US1] Run `verdict compat check --declared .verdict/compat-manifest.json --json` against the named producer and write `specs/002-cross-repo-contract-compat/compat-check-receipt.json` containing at least `allowed` (must be true), `producer_revision` from `producer-revision.txt`, and `consumer_head` from `git rev-parse HEAD`; do not skip or waive. If `producer-revision.txt` is not the live producer `origin/main` SHA, re-run T001–T005 against that live SHA before recording the receipt.
+- [X] T007 [US1] Re-run `pytest tests/test_compat_manifest.py` and confirm T004 now passes on `.verdict/compat-manifest.json` while `tests/fixtures/stale-compat-manifest.json` still fails closed with `RoutingDecisionContract` named
 
 **Checkpoint**: Compat check is honestly allowed; focused tests pass. Security job is still out of scope.
 
@@ -73,7 +73,7 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 ### Implementation for User Story 2
 
-- [ ] T008 [US2] Write `specs/002-cross-repo-contract-compat/repair-path.md` with: chosen path (regenerate consumer declaration), rejected paths, owners, named producer SHA from `producer-revision.txt`, rollout (producer already on main; consumer PR next), rollback (revert restores fail-closed stale declaration)
+- [X] T008 [US2] Write `specs/002-cross-repo-contract-compat/repair-path.md` with: chosen path (regenerate consumer declaration), rejected paths, owners, named producer SHA from `producer-revision.txt`, rollout (producer already on main; consumer PR next), rollback (revert restores fail-closed stale declaration)
 
 **Checkpoint**: Repair path is recorded independently of the JSON rewrite.
 
@@ -87,9 +87,9 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 ### Implementation for User Story 3
 
-- [ ] T009 [P] [US3] Confirm `src/trade_risk_engine/` has no diff versus `origin/master` (empty `git diff origin/master -- src/trade_risk_engine`)
-- [ ] T010 [P] [US3] Confirm `.github/workflows/ci.yml` has no diff versus `origin/master` (CON-001 install line and `safety check` job unchanged)
-- [ ] T011 [US3] Confirm this branch does not modify files under `specs/001-readme-accuracy-and-feature-reconciliation/` or the PR #34 worktree `/home/nick/dev/verdict-risk/.worktrees/001-readme-accuracy`
+- [X] T009 [P] [US3] Confirm `src/trade_risk_engine/` has no diff versus `origin/master` (empty `git diff origin/master -- src/trade_risk_engine`)
+- [X] T010 [P] [US3] Confirm `.github/workflows/ci.yml` has no diff versus `origin/master` (CON-001 install line and `safety check` job unchanged)
+- [X] T011 [US3] Confirm this branch does not modify files under `specs/001-readme-accuracy-and-feature-reconciliation/` or the PR #34 worktree `/home/nick/dev/verdict-risk/.worktrees/001-readme-accuracy`
 
 **Checkpoint**: Compatibility lane is isolated from product and security-tooling lanes.
 
@@ -99,9 +99,9 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 **Purpose**: Repository-native checks and disclosure that remaining CI failures are not this feature
 
-- [ ] T012 Run `ruff check src tests`, `ruff format --check src tests`, `mypy src`, and `pytest tests -q` using `pyproject.toml` in this worktree
-- [ ] T013 Follow `specs/002-cross-repo-contract-compat/quickstart.md` end to end and keep the named SHA in `producer-revision.txt` consistent with the written declaration
-- [ ] T014 Record in `specs/002-cross-repo-contract-compat/repair-path.md` that the CI security job remains a separate lane and that a green CON-001 result is not a merge
+- [X] T012 Run `ruff check src tests`, `ruff format --check src tests`, `mypy src`, and `pytest tests -q` using `pyproject.toml` in this worktree
+- [X] T013 Follow `specs/002-cross-repo-contract-compat/quickstart.md` end to end and keep the named SHA in `producer-revision.txt` consistent with the written declaration
+- [X] T014 Record in `specs/002-cross-repo-contract-compat/repair-path.md` that the CI security job remains a separate lane and that a green CON-001 result is not a merge
 
 ---
 
