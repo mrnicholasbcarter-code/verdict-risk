@@ -171,3 +171,9 @@ One writer in this worktree. Do not staff parallel writers. US2/US3 file-disjoin
 - Do not merge PR #34 from this lane
 - Unknown or failed compat check = blocked, not guessed
 - Next command after this file is `/speckit-analyze`, then `/speckit-implement`
+
+---
+
+## Phase 7: Convergence
+
+- [X] T015 Resolve the `verdict` CLI via PATH (CI installs it globally before pytest) with fallback to `.venv/bin/verdict` in `tests/test_compat_manifest.py` per Constitution IV / SC-001 / plan: testing (partial)

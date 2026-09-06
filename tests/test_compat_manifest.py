@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -10,8 +11,18 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DECLARED = PROJECT_ROOT / ".verdict" / "compat-manifest.json"
 PRODUCER = PROJECT_ROOT / "specs" / "002-cross-repo-contract-compat" / "producer-manifest.json"
 STALE = PROJECT_ROOT / "tests" / "fixtures" / "stale-compat-manifest.json"
-VERDICT = PROJECT_ROOT / ".venv" / "bin" / "verdict"
 STALE_RDC = "sha256:d893d5c55f520733bc6b117efa050a188f7450fb045aa386370687c429d8edfc"
+
+
+def _verdict_bin() -> str:
+    # Prefer the worktree venv (named producer SHA). CI has no .venv, so PATH.
+    local = PROJECT_ROOT / ".venv" / "bin" / "verdict"
+    if local.is_file():
+        return str(local)
+    on_path = shutil.which("verdict")
+    if on_path:
+        return on_path
+    raise FileNotFoundError("verdict CLI not found on PATH or at .venv/bin/verdict")
 
 
 def _load(path: Path) -> dict[str, object]:
@@ -20,7 +31,7 @@ def _load(path: Path) -> dict[str, object]:
 
 def _compat_check(declared: Path) -> dict[str, object]:
     result = subprocess.run(
-        [str(VERDICT), "compat", "check", "--declared", str(declared), "--json"],
+        [_verdict_bin(), "compat", "check", "--declared", str(declared), "--json"],
         check=False,
         capture_output=True,
         text=True,
@@ -28,6 +39,11 @@ def _compat_check(declared: Path) -> dict[str, object]:
     payload = json.loads(result.stdout)
     payload["_exit_code"] = result.returncode
     return payload
+
+
+def test_verdict_cli_resolves_from_path_or_venv() -> None:
+    path = Path(_verdict_bin())
+    assert path.is_file()
 
 
 def test_declared_schema_and_producer_keys() -> None:
