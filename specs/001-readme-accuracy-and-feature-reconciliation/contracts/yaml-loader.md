@@ -9,6 +9,7 @@
 from pathlib import Path
 from trade_risk_engine.gates import RiskContext  # or appropriate import
 
+
 def load_risk_config(path: Path | None = None) -> dict[str, float | int]:
     """
     Load RiskContext parameter defaults from a YAML file.

@@ -8,12 +8,13 @@
 ```python
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class ClusterCapContext:
-    cluster_id: str          # Bucket name (e.g. "BTC", "ETH", "SOL", "unknown")
+    cluster_id: str  # Bucket name (e.g. "BTC", "ETH", "SOL", "unknown")
     cluster_open_usd: float  # Sum of open USD risk in this cluster right now
-    proposed_cost: float     # USD cost of the candidate trade
-    max_cluster_usd: float   # USD ceiling for this cluster
+    proposed_cost: float  # USD cost of the candidate trade
+    max_cluster_usd: float  # USD ceiling for this cluster
 
 
 def evaluate_cluster_cap(ctx: ClusterCapContext) -> RiskDecision:
