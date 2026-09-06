@@ -36,7 +36,7 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Install verdict-core at the SHA in `specs/002-cross-repo-contract-compat/producer-revision.txt` into this worktree's local venv (do not commit the venv)
+- [ ] T002 Create gitignored `.venv` in this worktree and install verdict-core at the SHA in `specs/002-cross-repo-contract-compat/producer-revision.txt` (do not commit `.venv`)
 - [ ] T003 Run `verdict compat manifest --json` from that install and save stdout to `specs/002-cross-repo-contract-compat/producer-manifest.json` without editing hashes by hand
 
 **Checkpoint**: Named producer SHA and producer-emitted manifest exist. User stories can start.
@@ -53,13 +53,13 @@ description: "Task list for 002-cross-repo-contract-compat"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T004 [US1] Add failing tests in `tests/test_compat_manifest.py` that `.verdict/compat-manifest.json` has `schema_version` `1`, includes every key from `specs/002-cross-repo-contract-compat/producer-manifest.json`, and does not keep RoutingDecisionContract `sha256:d893d5c55f520733bc6b117efa050a188f7450fb045aa386370687c429d8edfc`
+- [ ] T004 [US1] Add failing tests in `tests/test_compat_manifest.py` that `.verdict/compat-manifest.json` has `schema_version` `1`, includes every key from `specs/002-cross-repo-contract-compat/producer-manifest.json`, and does not keep RoutingDecisionContract `sha256:d893d5c55f520733bc6b117efa050a188f7450fb045aa386370687c429d8edfc`; also copy the current stale file to `tests/fixtures/stale-compat-manifest.json` and assert `verdict compat check --declared tests/fixtures/stale-compat-manifest.json --json` is not allowed and names `RoutingDecisionContract`
 
 ### Implementation for User Story 1
 
 - [ ] T005 [US1] Replace `.verdict/compat-manifest.json` with the exact contents of `specs/002-cross-repo-contract-compat/producer-manifest.json` (copy, do not retype hashes)
-- [ ] T006 [US1] Run `verdict compat check --declared .verdict/compat-manifest.json --json` against the named producer and write stdout to `specs/002-cross-repo-contract-compat/compat-check-receipt.json` (`allowed` must be true; do not skip or waive)
-- [ ] T007 [US1] Re-run `pytest tests/test_compat_manifest.py` and confirm T004 now passes on `.verdict/compat-manifest.json`
+- [ ] T006 [US1] Run `verdict compat check --declared .verdict/compat-manifest.json --json` against the named producer and write `specs/002-cross-repo-contract-compat/compat-check-receipt.json` containing at least `allowed` (must be true), `producer_revision` from `producer-revision.txt`, and `consumer_head` from `git rev-parse HEAD`; do not skip or waive. If `producer-revision.txt` is not the live producer `origin/main` SHA, re-run T001–T005 against that live SHA before recording the receipt.
+- [ ] T007 [US1] Re-run `pytest tests/test_compat_manifest.py` and confirm T004 now passes on `.verdict/compat-manifest.json` while `tests/fixtures/stale-compat-manifest.json` still fails closed with `RoutingDecisionContract` named
 
 **Checkpoint**: Compat check is honestly allowed; focused tests pass. Security job is still out of scope.
 

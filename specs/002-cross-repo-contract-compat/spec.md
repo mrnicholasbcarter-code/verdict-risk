@@ -14,7 +14,7 @@
 
 - Q: How should the routing-decision contract mismatch be repaired? → A: Regenerate the consumer declaration from verified current producer contracts.
 - Q: Where should the compatibility repair ship? → A: New standalone change; leave the open README-accuracy change untouched until this lane is green.
-- Q: Are there remaining critical ambiguities after the recorded Q1/Q2 answers? → A: None; proceed to plan. Exact named producer revision at implement time and regeneration mechanics are deferred to planning.
+- Q: Are there remaining critical ambiguities after the recorded Q1/Q2 answers? → A: None; proceed to plan. Exact named producer revision is re-read from producer `origin/main` at implement (plan-time lead `536c79e`). Regeneration is `verdict compat manifest --json` copied onto `.verdict/compat-manifest.json` with no hand-typed identities.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -79,15 +79,15 @@ A reviewer looking at this compatibility repair must be able to tell it apart fr
 
 ### Functional Requirements
 
-- **FR-001**: The required compatibility check MUST remain fail-closed. A mismatch MUST block the change. The check MUST NOT be skipped, weakened, or treated as optional to obtain a pass.
+- **FR-001**: The required compatibility check MUST remain fail-closed. A mismatch, a missing declaration file, or an invalid declaration MUST block the change. The check MUST NOT be skipped, weakened, or treated as optional to obtain a pass.
 - **FR-002**: When the check blocks, it MUST identify the mismatched contract by name. The current verified mismatch is the routing-decision contract; the feature MUST still handle the general case of one or more mismatched contracts.
-- **FR-003**: A consumer declaration MUST be accepted only when it matches the current published producer for every declared contract, based on verified producer evidence for a named producer revision.
+- **FR-003**: A consumer declaration MUST be accepted only when it matches the current published producer for every current producer contract, based on verified producer evidence for a named producer revision. The declaration MUST include schema version `1`, a per-contract identity for every current producer contract, and a combined identity that matches those entries. Extra unknown contract names MAY be ignored; a missing or mismatched current producer contract MUST block.
 - **FR-004**: The feature MUST regenerate the consumer declaration from verified current producer contracts for a named producer revision. It MUST NOT treat a canonical producer release or a compatibility-policy change as the repair path for this lane.
 - **FR-005**: A declaration-only edit without verified producer evidence MUST be rejected.
 - **FR-006**: Cross-repository work MUST name the contract owner, the consumer-declaration owner, compatibility requirements, validation in each affected repository, and an ordered rollout and rollback path before the first dependent change is merged.
 - **FR-007**: This feature MUST NOT treat the separate security-tooling CI failure as in scope. That failure MUST remain a distinct lane.
 - **FR-008**: This feature MUST NOT rewrite or re-implement the README-accuracy/feature-reconciliation product work. That work stays owned by its existing change.
-- **FR-009**: Completion claims MUST bind to an exact consumer source state, the named producer revision used for comparison, the required check outcomes, and any remaining failed or unavailable checks. Unknown results MUST be reported as unknown, not as passing.
+- **FR-009**: Completion claims MUST bind to an exact consumer source identity (the consumer git HEAD), the named producer revision used for comparison, the required check outcomes, and any remaining failed or unavailable checks. Unknown results MUST be reported as unknown, not as passing.
 - **FR-010**: After the approved repair, reviewers MUST be able to determine within one review whether the shipped path regenerated consumer evidence, released a canonical producer contract, or changed policy.
 - **FR-011**: The open README-accuracy change MUST NOT be merged until this compatibility feature has an approved spec path, implementation, tests, and green required compatibility checks, and any remaining required failures are owned by their own approved lanes.
 

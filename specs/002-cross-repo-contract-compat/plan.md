@@ -26,7 +26,7 @@ Restore an honest fail-closed CON-001 result for verdict-risk by regenerating `.
 
 **Performance Goals**: N/A — offline hash compare, no latency budget
 
-**Constraints**: Fail-closed CON-001; no hand-edited hashes; no CI/security-policy change; no writes to PR #34 or dirty master; one writer in this worktree
+**Constraints**: Fail-closed CON-001; no hand-edited hashes; no CI/security-policy change; no writes to PR #34 or dirty master; one writer in this worktree; local producer install lives in gitignored `.venv`; receipts include consumer HEAD plus named producer SHA
 
 **Scale/Scope**: One consumer declaration file, one focused test, no engine changes; seven cross-repo contracts
 

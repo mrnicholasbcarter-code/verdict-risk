@@ -10,59 +10,59 @@
 
 ## Requirement Completeness
 
-- [ ] CHK001 Are fail-closed blocking requirements stated for mismatch, missing declaration, and invalid declaration? [Completeness, Spec §FR-001, Spec §FR-002]
-- [ ] CHK002 Is the required contents of a consumer declaration specified (schema version, per-contract identities, combined identity)? [Completeness, Spec §FR-003, Plan data-model]
-- [ ] CHK003 Is the repair path limited to regenerating the consumer declaration from verified producer evidence, with producer-release and policy-change paths rejected? [Completeness, Spec §FR-004, Spec §Clarifications]
-- [ ] CHK004 Are contract owner and declaration owner named, with ordered rollout and rollback? [Completeness, Spec §FR-006]
-- [ ] CHK005 Are out-of-scope lanes named: README-accuracy change and security-tooling failure? [Completeness, Spec §FR-007, Spec §FR-008]
+- [x] CHK001 Are fail-closed blocking requirements stated for mismatch, missing declaration, and invalid declaration? [Completeness, Spec §FR-001, Spec §FR-002]
+- [x] CHK002 Is the required contents of a consumer declaration specified (schema version, per-contract identities, combined identity)? [Completeness, Spec §FR-003, Plan data-model]
+- [x] CHK003 Is the repair path limited to regenerating the consumer declaration from verified producer evidence, with producer-release and policy-change paths rejected? [Completeness, Spec §FR-004, Spec §Clarifications]
+- [x] CHK004 Are contract owner and declaration owner named, with ordered rollout and rollback? [Completeness, Spec §FR-006]
+- [x] CHK005 Are out-of-scope lanes named: README-accuracy change and security-tooling failure? [Completeness, Spec §FR-007, Spec §FR-008]
 
 ## Requirement Clarity
 
-- [ ] CHK006 Is "verified producer evidence" defined as a named producer revision plus producer-emitted declaration, not a hand-typed identity? [Clarity, Spec §FR-005, Plan contracts]
-- [ ] CHK007 Is "named producer revision" distinguished from a moving default branch, including re-verification at implement time? [Clarity, Spec §Edge Cases, Spec §Assumptions]
-- [ ] CHK008 Is "standalone change" explicit that this lane must not edit the open README-accuracy change? [Clarity, Spec §FR-008, Spec §User Story 3]
-- [ ] CHK009 Is "do not weaken the gate" specific enough to forbid skip, waiver, and fail-open exceptions? [Clarity, Spec §FR-001, Spec §User Story 1]
+- [x] CHK006 Is "verified producer evidence" defined as a named producer revision plus producer-emitted declaration, not a hand-typed identity? [Clarity, Spec §FR-005, Plan contracts]
+- [x] CHK007 Is "named producer revision" distinguished from a moving default branch, including re-verification at implement time? [Clarity, Spec §Edge Cases, Spec §Assumptions]
+- [x] CHK008 Is "standalone change" explicit that this lane must not edit the open README-accuracy change? [Clarity, Spec §FR-008, Spec §User Story 3]
+- [x] CHK009 Is "do not weaken the gate" specific enough to forbid skip, waiver, and fail-open exceptions? [Clarity, Spec §FR-001, Spec §User Story 1]
 
 ## Requirement Consistency
 
-- [ ] CHK010 Do FR-004 (regenerate declaration) and FR-006 (producer owns contract meaning) agree on who may change contract meaning? [Consistency, Spec §FR-004, Spec §FR-006]
-- [ ] CHK011 Do FR-011 / SC-005 (do not merge the product change until blockers have approved paths) agree with Q2 A (do not fold this repair into that change)? [Consistency, Spec §FR-011, Spec §Clarifications]
-- [ ] CHK012 Do SC-001 (honest pass or explained residual block) and SC-004 (security-tooling failure remains unresolved) agree that a green compatibility result is not a merge? [Consistency, Spec §SC-001, Spec §SC-004]
+- [x] CHK010 Do FR-004 (regenerate declaration) and FR-006 (producer owns contract meaning) agree on who may change contract meaning? [Consistency, Spec §FR-004, Spec §FR-006]
+- [x] CHK011 Do FR-011 / SC-005 (do not merge the product change until blockers have approved paths) agree with Q2 A (do not fold this repair into that change)? [Consistency, Spec §FR-011, Spec §Clarifications]
+- [x] CHK012 Do SC-001 (honest pass or explained residual block) and SC-004 (security-tooling failure remains unresolved) agree that a green compatibility result is not a merge? [Consistency, Spec §SC-001, Spec §SC-004]
 
 ## Acceptance Criteria Quality
 
-- [ ] CHK013 Can "honest pass" be judged without implementation internals (allowed vs named mismatch)? [Measurability, Spec §SC-001, Spec §FR-002]
-- [ ] CHK014 Can "mismatched declaration is never accepted" be judged from the written fail-closed rule alone? [Measurability, Spec §SC-002]
-- [ ] CHK015 Can a reviewer identify the recorded repair path, owners, and rollout in one pass from the spec/plan? [Measurability, Spec §SC-003, Spec §FR-010]
+- [x] CHK013 Can "honest pass" be judged without implementation internals (allowed vs named mismatch)? [Measurability, Spec §SC-001, Spec §FR-002]
+- [x] CHK014 Can "mismatched declaration is never accepted" be judged from the written fail-closed rule alone? [Measurability, Spec §SC-002]
+- [x] CHK015 Can a reviewer identify the recorded repair path, owners, and rollout in one pass from the spec/plan? [Measurability, Spec §SC-003, Spec §FR-010]
 
 ## Scenario Coverage
 
-- [ ] CHK016 Are primary-path requirements complete for a stale declaration becoming an allowed declaration after verified regeneration? [Coverage, Spec §User Story 1]
-- [ ] CHK017 Are exception-path requirements complete when producer evidence is unavailable (blocked/unknown, not guessed)? [Coverage, Spec §Edge Cases]
-- [ ] CHK018 Are recovery/rollback requirements defined so revert restores a fail-closed block rather than a waived pass? [Coverage, Spec §Edge Cases, Spec §FR-006]
-- [ ] CHK019 Are later additional contract mismatches required to be handled, not only the current routing-decision mismatch? [Coverage, Spec §FR-002, Spec §Edge Cases]
+- [x] CHK016 Are primary-path requirements complete for a stale declaration becoming an allowed declaration after verified regeneration? [Coverage, Spec §User Story 1]
+- [x] CHK017 Are exception-path requirements complete when producer evidence is unavailable (blocked/unknown, not guessed)? [Coverage, Spec §Edge Cases]
+- [x] CHK018 Are recovery/rollback requirements defined so revert restores a fail-closed block rather than a waived pass? [Coverage, Spec §Edge Cases, Spec §FR-006]
+- [x] CHK019 Are later additional contract mismatches required to be handled, not only the current routing-decision mismatch? [Coverage, Spec §FR-002, Spec §Edge Cases]
 
 ## Edge Case Coverage
 
-- [ ] CHK020 Is the case that the mismatch predates the product change, and is not evidence that change altered the producer, stated as a requirement constraint? [Edge Case, Spec §Edge Cases, Spec §Assumptions]
-- [ ] CHK021 Is a declaration that matches an older producer revision still required to fail against the current published producer? [Edge Case, Spec §Edge Cases]
-- [ ] CHK022 Is hand-editing only the mismatched contract identity (leaving combined identity stale) treated as rejected unverified evidence? [Edge Case, Spec §FR-005, Plan research]
+- [x] CHK020 Is the case that the mismatch predates the product change, and is not evidence that change altered the producer, stated as a requirement constraint? [Edge Case, Spec §Edge Cases, Spec §Assumptions]
+- [x] CHK021 Is a declaration that matches an older producer revision still required to fail against the current published producer? [Edge Case, Spec §Edge Cases]
+- [x] CHK022 Is hand-editing only the mismatched contract identity (leaving combined identity stale) treated as rejected unverified evidence? [Edge Case, Spec §FR-005, Plan research]
 
 ## Non-Functional / Policy Requirements
 
-- [ ] CHK023 Are fail-closed and least-authority requirements stated without inventing numeric performance budgets this lane does not need? [Non-Functional, Spec §SC-001, Plan Technical Context]
-- [ ] CHK024 Is the security-tooling failure explicitly excluded so a compatibility-only change cannot claim that gate as success? [Non-Functional, Spec §FR-007, Spec §SC-004]
+- [x] CHK023 Are fail-closed and least-authority requirements stated without inventing numeric performance budgets this lane does not need? [Non-Functional, Spec §SC-001, Plan Technical Context]
+- [x] CHK024 Is the security-tooling failure explicitly excluded so a compatibility-only change cannot claim that gate as success? [Non-Functional, Spec §FR-007, Spec §SC-004]
 
 ## Dependencies & Assumptions
 
-- [ ] CHK025 Is the producer CLI publication/check contract documented as the verification dependency, with the consumer file as the owned artifact? [Dependency, Plan contracts, Spec §FR-004]
-- [ ] CHK026 Is the plan-time producer revision recorded as a lead that implement must re-verify against live producer default-branch identity? [Assumption, Spec §Assumptions, Plan research]
-- [ ] CHK027 Are isolated-worktree and one-writer constraints documented so this lane cannot use the dirty main checkout or the README-accuracy worktree? [Assumption, Spec §Assumptions]
+- [x] CHK025 Is the producer CLI publication/check contract documented as the verification dependency, with the consumer file as the owned artifact? [Dependency, Plan contracts, Spec §FR-004]
+- [x] CHK026 Is the plan-time producer revision recorded as a lead that implement must re-verify against live producer default-branch identity? [Assumption, Spec §Assumptions, Plan research]
+- [x] CHK027 Are isolated-worktree and one-writer constraints documented so this lane cannot use the dirty main checkout or the README-accuracy worktree? [Assumption, Spec §Assumptions]
 
 ## Ambiguities & Conflicts
 
-- [ ] CHK028 Does keeping CI on the moving producer default branch conflict with the named-revision repair receipt, and is the resolution written (named SHA for emit/receipt; CI line unchanged)? [Conflict, Spec §FR-003, Plan research]
-- [ ] CHK029 Are remaining "deferred to plan" items (exact SHA at implement, emit mechanics) now specified in plan/contracts, or still open in the spec? [Ambiguity, Spec §Clarifications, Plan research]
+- [x] CHK028 Does keeping CI on the moving producer default branch conflict with the named-revision repair receipt, and is the resolution written (named SHA for emit/receipt; CI line unchanged)? [Conflict, Spec §FR-003, Plan research]
+- [x] CHK029 Are remaining "deferred to plan" items (exact SHA at implement, emit mechanics) now specified in plan/contracts, or still open in the spec? [Ambiguity, Spec §Clarifications, Plan research]
 
 ## Notes
 
@@ -71,3 +71,4 @@
 - `/speckit-implement` reads checklist checkbox state as a gate and must not modify markers
 - `checklists/requirements.md` has a separate built-in lifecycle maintained by `/speckit-specify` and `/speckit-clarify`
 - This run used defaults (depth: standard; audience: PR reviewer; focus: fail-closed declaration quality and scope/rollback boundaries) because `/speckit-checklist` was invoked with no extra arguments and Q1/Q2 plus out-of-scope lanes are already recorded
+- Reviewer evaluation 2026-09-06: all 29 items pass after closing analyze gaps C1/C2/U1/I1/U2 in spec.md, plan.md, and tasks.md (missing/invalid declaration fail-closed, declaration field set, consumer HEAD in receipts, `.venv` path, stale-fixture negative path, re-emit if named SHA ≠ live producer `origin/main`)
