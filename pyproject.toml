@@ -17,10 +17,11 @@ dependencies = [
     "opentelemetry-api>=1.20.0",
     "opentelemetry-sdk>=1.20.0",
     "httpx>=0.20.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-cov", "hypothesis", "ruff", "mypy", "build", "twine", "code-review-graph>=2.3.7"]
+dev = ["pytest", "pytest-cov", "hypothesis", "ruff", "mypy", "build", "twine", "code-review-graph>=2.3.7", "types-PyYAML"]
 test = ["pytest", "pytest-cov", "hypothesis"]
 
 [project.scripts]

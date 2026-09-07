@@ -19,9 +19,11 @@ from opentelemetry import trace
 from opentelemetry.trace import Span
 
 from .gates import (
+    ClusterCapContext,
     ConsecutiveLossGate,
     KillSwitch,
     TimedCircuitBreaker,
+    evaluate_cluster_cap,
     evaluate_concentration,
     evaluate_consecutive_losses,
     evaluate_drawdown,
@@ -82,13 +84,15 @@ class RiskAuthority:
         expected_value: float = 0.0,
         trade_outcomes: list[TradeOutcome] | None = None,
         current_time: datetime | None = None,
+        cluster_cap_ctx: ClusterCapContext | None = None,
     ) -> RiskDecision:
         """Evaluate a proposed trade using only supplied inputs.
 
         The gate order is EV, drawdown, consecutive loss window, concentration,
-        and latency budget. This order rejects mathematically bad trades before
-        spending time aggregating exposure, and keeps the method pure: no I/O,
-        no mutation outside the returned ``RiskDecision``.
+        cluster cap (only when ``cluster_cap_ctx`` is supplied), and latency
+        budget. This order rejects mathematically bad trades before spending
+        time aggregating exposure, and keeps the method pure: no I/O, no
+        mutation outside the returned ``RiskDecision``.
         """
         return _evaluate_stateless(
             ctx=ctx,
@@ -100,6 +104,7 @@ class RiskAuthority:
             expected_value=expected_value,
             trade_outcomes=trade_outcomes,
             current_time=current_time,
+            cluster_cap_ctx=cluster_cap_ctx,
         )
 
     def evaluate_with_state(
@@ -113,6 +118,7 @@ class RiskAuthority:
         expected_value: float = 0.0,
         trade_outcomes: list[TradeOutcome] | None = None,
         current_time: datetime | None = None,
+        cluster_cap_ctx: ClusterCapContext | None = None,
     ) -> RiskDecision:
         """Evaluate a trade after checking opt-in stateful gates.
 
@@ -149,6 +155,7 @@ class RiskAuthority:
             expected_value=expected_value,
             trade_outcomes=trade_outcomes,
             current_time=current_time,
+            cluster_cap_ctx=cluster_cap_ctx,
         )
 
     def record_resolved_trade(self, pnl: float, at: datetime | None = None) -> None:
@@ -225,6 +232,7 @@ def _evaluate_stateless(
     expected_value: float,
     trade_outcomes: list[TradeOutcome] | None,
     current_time: datetime | None,
+    cluster_cap_ctx: ClusterCapContext | None = None,
 ) -> RiskDecision:
     """Run the pure gate chain, with tracing only when an SDK tracer is installed."""
     start_ns = time.perf_counter_ns()
@@ -290,6 +298,14 @@ def _evaluate_stateless(
         ):
             _mark_rejected(span, decision)
             return decision
+
+        if cluster_cap_ctx is not None:
+            cluster_decision = evaluate_cluster_cap(cluster_cap_ctx)
+            if not cluster_decision.approved:
+                decision.approved = False
+                decision.reason_code = cluster_decision.reason_code
+                _mark_rejected(span, decision)
+                return decision
 
         elapsed_us = (time.perf_counter_ns() - start_ns) // 1000
         if elapsed_us > ctx.latency_budget_us:

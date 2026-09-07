@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import final
 
@@ -185,6 +186,62 @@ def evaluate_consecutive_losses(
             break
 
     return True
+
+
+@dataclass(frozen=True)
+class ClusterCapContext:
+    """Inputs for :func:`evaluate_cluster_cap`.
+
+    Ported from the coin-cluster exposure cap in
+    ``~/kalshi-trader/v40/risk.py:282-354`` (``max_cluster_usd``), simplified to a
+    single stateless cap: the per-expiry and per-series caps in that source are
+    tracked via live order state and are out of scope for this stateless engine.
+    """
+
+    cluster_id: str
+    cluster_open_usd: float
+    proposed_cost: float
+    max_cluster_usd: float
+
+
+def evaluate_cluster_cap(ctx: ClusterCapContext) -> RiskDecision:
+    """
+    Reject a trade if adding it would exceed the cluster's open-USD ceiling.
+
+    Returns an approved ``RiskDecision`` or a rejected one with reason
+    ``ERR_CLUSTER_CAP``.
+
+    Edge cases:
+        - ``cluster_id == "unknown"`` -> always approved; the caller is
+          responsible for mapping tickers to clusters.
+        - ``proposed_cost <= 0`` -> always approved (guard at call site).
+        - ``max_cluster_usd <= 0`` -> always rejected (invalid config; the
+          caller must validate configuration before evaluating trades).
+    """
+    if ctx.cluster_id == "unknown":
+        return RiskDecision(approved=True, reason_code="OK", suggested_size=ctx.proposed_cost)
+
+    if ctx.proposed_cost <= 0:
+        return RiskDecision(approved=True, reason_code="OK", suggested_size=ctx.proposed_cost)
+
+    if ctx.max_cluster_usd <= 0:
+        return RiskDecision(
+            approved=False,
+            reason_code=f"ERR_CLUSTER_CAP: max_cluster_usd={ctx.max_cluster_usd} is not positive",
+            suggested_size=0.0,
+        )
+
+    if ctx.cluster_open_usd + ctx.proposed_cost > ctx.max_cluster_usd:
+        return RiskDecision(
+            approved=False,
+            reason_code=(
+                f"ERR_CLUSTER_CAP: {ctx.cluster_id} exposure "
+                f"{ctx.cluster_open_usd + ctx.proposed_cost} would exceed {ctx.max_cluster_usd}"
+            ),
+            suggested_size=0.0,
+        )
+
+    return RiskDecision(approved=True, reason_code="OK", suggested_size=ctx.proposed_cost)
 
 
 @final
