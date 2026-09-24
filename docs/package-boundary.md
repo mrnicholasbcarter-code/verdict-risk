@@ -1,6 +1,6 @@
 # Package boundary and migration policy
 
-The released package is named `verdict-risk`, while its Python import namespace
+The package distribution is named `llm-gate-risk` (not yet published to PyPI), while its Python import namespace
 remains `trade_risk_engine` for compatibility with the existing API and test
 suite. The console script is `verdict-risk-benchmark` and currently points to
 `trade_risk_engine.benchmark:main`.
