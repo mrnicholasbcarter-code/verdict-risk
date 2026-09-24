@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "llm-gate-risk"
 version = "0.1.0"
-description = "Zero-allocation absolute drawdown mathematics evaluators for LLM routing risk assessment."
+description = "Deterministic, I/O-free drawdown and exposure risk gates for trading and LLM routing risk assessment."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
