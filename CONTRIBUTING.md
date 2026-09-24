@@ -124,7 +124,7 @@ tests/
 
 ### Mandatory Test Coverage
 
-- **100% line coverage** minimum
+- **80% line coverage** minimum, enforced in CI (`--cov-fail-under=80`); current coverage is about 86%
 - **Property-based tests** for all mathematical functions (Hypothesis)
 - **Precision drift tests** for floating-point boundaries
 - **Edge case tests**: NaN, infinity, subnormal, zero, max/min values
@@ -136,7 +136,7 @@ tests/
 pytest tests/
 
 # With coverage
-pytest --cov=src/trade_risk_engine --cov-report=term-missing
+pytest --cov=trade_risk_engine --cov-report=term-missing
 
 # Property-based tests only
 pytest tests/test_property.py -v
