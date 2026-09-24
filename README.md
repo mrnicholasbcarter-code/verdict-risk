@@ -1,6 +1,6 @@
-# Verdict Risk — Zero-Allocation Capital Protection Evaluator
+# Verdict Risk — Deterministic Capital Protection Evaluator
 
-> Deterministic, pure-functional capital protection evaluator for quantitative trading. Designed to run directly inside order-routing hot paths, `verdict-risk` verifies trading signals against complex risk parameters from memory, guaranteeing sub-millisecond latencies under strict execution constraints.
+> Deterministic, pure-functional capital protection evaluator for quantitative trading. Designed to run directly inside order-routing hot paths, `verdict-risk` verifies trading signals against risk parameters held in memory. The pure evaluation path does no I/O; measured single-call latency is in the low tens of microseconds on commodity hardware (see [Performance](#performance)).
 
 ---
 
@@ -10,7 +10,7 @@ Traditional trade risk systems suffer execution drift, concurrency race conditio
 
 | Layer | Responsibility | Latency Budget |
 |-------|----------------|----------------|
-| **Pure Math** (this crate) | Drawdown gates, position limits, cluster exposure cap, Kelly sizing | **< 50 µs** |
+| **Pure Math** (this package) | Drawdown gates, position limits, cluster exposure cap, Kelly sizing | target < 50 µs (measured p99 ≈ 23 µs, see below) |
 | **State Management** | Redis/Postgres persistence, audit logging | < 1 ms |
 | **Network I/O** | Broker APIs, market data feeds | Variable |
 
@@ -20,9 +20,9 @@ Traditional trade risk systems suffer execution drift, concurrency race conditio
 
 | Feature | Description |
 |---------|-------------|
-| **Zero-allocation hot path** | `msgspec`-encoded structs, no GC pressure on evaluation |
+| **Low-allocation hot path** | `msgspec` structs with `gc=False` for positions/decisions; about one small allocation (the returned `RiskDecision`) per call |
 | **Deterministic gates** | Same inputs → same outputs, always |
-| **Sub-millisecond latency** | Pure Python hot path, no locks or I/O |
+| **Microsecond-scale latency** | Pure Python hot path, no locks or I/O; reproducible with `verdict-risk-benchmark` |
 | **Stateless gates** | Drawdown, position, cluster cap, Kelly — no external deps |
 | **Stateful desk controls** | Daily loss limits, sector exposure, factor models (optional Redis) |
 | **OpenTelemetry native** | Spans, metrics, logs for every evaluation |
@@ -190,16 +190,22 @@ python -m trade_risk_engine.benchmark --iterations 1000 --warmup-iterations 100
 
 ## Performance
 
-| Operation | Latency (p50) | Latency (p99) | Throughput |
-|-----------|---------------|---------------|------------|
-| Drawdown gate | 12 µs | 35 µs | 80,000 ops/s |
-| Position limit | 8 µs | 22 µs | 120,000 ops/s |
+Measured with the bundled benchmark, which times `RiskAuthority.evaluate_trade`
+(the full stateless gate path) end to end:
 
-*Historical benchmark snapshot; rerun the benchmark on your hardware before
-using these figures as an operational bound. The cluster cap gate and Kelly
-sizing function are not yet covered by `trade_risk_engine.benchmark` — no
-throughput/latency numbers are published for them here until a real benchmark
-is written.*
+```console
+uv run verdict-risk-benchmark --iterations 20000 --warmup-iterations 2000
+```
+
+| Path | p50 | p95 | p99 |
+|------|-----|-----|-----|
+| `RiskAuthority.evaluate_trade` | 9.6 µs | 9.9 µs | 23.3 µs |
+
+*Measured 2026-09-24, CPython 3.13, Linux x86-64 workstation. Figures are
+descriptive, not a guarantee: rerun on your hardware before using them as an
+operational bound. Allocation, measured with `tracemalloc` over 1,000 warm calls,
+is about 49 bytes (one object, the returned `RiskDecision`) per call. Individual
+gates (cluster cap, Kelly sizing) are not benchmarked separately.*
 
 ---
 
