@@ -195,7 +195,6 @@ Releases are managed by maintainers:
 ## Getting Help
 
 - **Issues**: [GitHub Issues](https://github.com/mrnicholasbcarter-code/verdict-risk/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/mrnicholasbcarter-code/verdict-risk/discussions)
 - **Security**: See [SECURITY.md](SECURITY.md)
 
 ## License
