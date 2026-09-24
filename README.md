@@ -57,14 +57,19 @@ Traditional trade risk systems suffer execution drift, concurrency race conditio
 
 ## Installation
 
+The package is not published to PyPI yet. Install from source:
+
 ```bash
-pipx install verdict-risk
+git clone https://github.com/mrnicholasbcarter-code/verdict-risk.git
+cd verdict-risk
+uv sync --extra dev          # or: pip install -e ".[dev]"
+uv run verdict-risk-benchmark --iterations 1000
 ```
 
 Requires Python 3.10+ (3.11 recommended).
 
-The distribution is `verdict-risk`; the compatible Python import namespace is
-currently `trade_risk_engine`. See [the package boundary policy](docs/package-boundary.md)
+The distribution name in `pyproject.toml` is `llm-gate-risk`; the Python import
+namespace is `trade_risk_engine`. See [the package boundary policy](docs/package-boundary.md)
 before relying on a future `verdict_risk` import.
 
 ---

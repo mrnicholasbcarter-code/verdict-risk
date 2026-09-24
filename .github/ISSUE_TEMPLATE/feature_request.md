@@ -23,7 +23,7 @@ assignees: ''
 <!-- Does this involve: -->
 - [ ] New risk metrics or evaluators
 - [ ] Floating-point precision requirements
-- [ ] Performance constraints (zero-allocation paths)
+- [ ] Performance constraints (hot-path latency and allocations)
 - [ ] IEEE 754 compliance requirements
 - [ ] Decimal precision for financial calculations
 - [ ] State machine transitions
