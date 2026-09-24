@@ -1,4 +1,3 @@
-++ /home/nick/trade-risk-engine/SECURITY.md
 # Security Policy
 
 ## Supported Versions
@@ -12,7 +11,7 @@ We take security seriously. Below are the versions currently receiving security 
 
 ## Reporting a Vulnerability
 
-We take the security of `trade-risk-engine` seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of `verdict-risk` seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 ### How to Report
 
@@ -20,8 +19,7 @@ We take the security of `trade-risk-engine` seriously. If you believe you have f
 
 Instead, please report them via:
 
-1. **GitHub Security Advisories** (Preferred): Use the [Security Advisory](https://github.com/mrnicholasbcarter-code/trade-risk-engine/security/advisories/new) tab to privately report the vulnerability.
-2. **Email**: Send details to security@mrnicholasbcarter-code.com
+- **GitHub private vulnerability reporting**: open a [private security advisory](https://github.com/mrnicholasbcarter-code/verdict-risk/security/advisories/new) for this repository.
 
 ### What to Include
 
@@ -41,7 +39,7 @@ Please include the following information in your report:
 - **Fix Timeline**: Critical vulnerabilities will be patched within 7 days; high/medium within 30 days
 - **Credit**: We will credit you in the security advisory (unless you prefer anonymity)
 
-## Security Considerations for trade-risk-engine
+## Security Considerations for verdict-risk
 
 This library implements mathematically deterministic risk evaluation for trading systems. Security considerations include:
 
@@ -73,7 +71,7 @@ We follow responsible disclosure practices. We ask that you give us reasonable t
 ## Security Contacts
 
 - **Primary**: Nicholas Carter (@mrnicholasbcarter-code)
-- **Security Email**: security@mrnicholasbcarter-code.com
+- **Private report**: [security advisory form](https://github.com/mrnicholasbcarter-code/verdict-risk/security/advisories/new)
 
 ## Recognition
 
